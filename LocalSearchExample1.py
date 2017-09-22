@@ -27,14 +27,15 @@ def localSearch(cities, costs):
             if i+1 == len(path):
                 break
             
-            for j in range(1, len(path)):
+            for j in range(0, len(path)):
                 if j == i or j == i-1 or j == i+1:
                     continue
                 if j+1 == len(path):
                     break
-                
                 actualPathCost = getCost(path[i], path[i+1], costs) + getCost(path[j], path[j+1], costs)
                 newPathCost = getCost(path[i], path[j], costs) + getCost(path[i+1], path[j+1], costs)
+                #actualPathCost = getCost(path[i], path[i+1], costs)
+                #newPathCost = getCost(path[i], path[j], costs)
                 if actualPathCost > newPathCost:
                     temp = path[i+1]
                     path[i+1] = path[j]
@@ -45,12 +46,12 @@ def localSearch(cities, costs):
 cities1 = ('A','B','C','D','E')
 costs1 = {
             ('A', 'B') : 3,
-            ('A', 'C') : 1,
+            ('A', 'C') : 100,
             ('A', 'D') : 8,
-            ('A', 'E') : 10,
+            ('A', 'E') : 1,
             ('B', 'C') : 6,
             ('B', 'D') : 1,
-            ('B', 'E') : 7,
+            ('B', 'E') : 1,
             ('C', 'D') : 6,
             ('C', 'E') : 7,
             ('D', 'E') : 5        
