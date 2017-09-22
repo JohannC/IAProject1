@@ -59,14 +59,3 @@ costs1 = {
 
 print(localSearch(cities1, costs1))
 
-cities1 = ('A','B','C','D')
-costs1 = {
-            ('A', 'B') : 4,
-            ('A', 'C') : 1,
-            ('A', 'D') : 8,
-            ('B', 'C') : 2,
-            ('B', 'D') : 1,
-            ('C', 'D') : 6,
-        }  
-
-

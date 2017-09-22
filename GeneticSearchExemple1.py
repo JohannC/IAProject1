@@ -1,7 +1,3 @@
-#https://fr.wikipedia.org/wiki/Probl%C3%A8me_du_voyageur_de_commerce
-#https://fr.wikipedia.org/wiki/2-opt
-#https://fr.wikipedia.org/wiki/Recherche_locale_(optimisation)
-
 from random import randint
 from random import shuffle
 
