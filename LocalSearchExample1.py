@@ -1,6 +1,7 @@
 #https://fr.wikipedia.org/wiki/Probl%C3%A8me_du_voyageur_de_commerce
 #https://fr.wikipedia.org/wiki/2-opt
 #https://fr.wikipedia.org/wiki/Recherche_locale_(optimisation)
+from RandomCityMap import RandomCityMap
 
 def getTotalCost(path, costs):
     cost = 0
@@ -56,6 +57,10 @@ costs1 = {
             ('C', 'E') : 7,
             ('D', 'E') : 5        
         }  
-
+cityMap1 = RandomCityMap(10)
+print(cityMap1.getCityList())
+print(cityMap1.getCosts())
+print(cityMap1.getCostBetweenCities(1,5))
+print(cityMap1.getTotalCost(cityMap1.getCityList()))
 print(localSearch(cities1, costs1))
 

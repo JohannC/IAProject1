@@ -1,6 +1,9 @@
 from random import randint
 from random import shuffle
 
+MAX_NUMBER_OF_SIBLINGS = 70
+MIN_NUMBER_OF_SIBLINGS = 30
+MAX_NUMBER_WITHOUT_IMPROVEMENT = 5
 
 def makeLove(father, mother):
     halfNumberOfCities = int(len(father)/2)
@@ -101,10 +104,11 @@ def keepBestElements(population, costs, numberToKeep):
 
 def geneticSearch(cities, costs):
     noImprovement = 0
-    population = generatePolulation(cities, 30)
-    while noImprovement <5:
+    population = generatePolulation(cities, MAX_NUMBER_OF_SIBLINGS)
+    while noImprovement < MAX_NUMBER_WITHOUT_IMPROVEMENT:
         actualBestElement = bestElement(population, costs)
-        for i in range(0,20):
+        loopNumber = int((MAX_NUMBER_OF_SIBLINGS - MIN_NUMBER_OF_SIBLINGS)/2)
+        for i in range(0, loopNumber):
             parent1 = selectParent(population, costs)
             parent2 = selectParent(population, costs)
             (kid1, kid2) = makeLove(parent1, parent2)
@@ -112,7 +116,7 @@ def geneticSearch(cities, costs):
             mutate(kid2)
             population.append(kid1)
             population.append(kid2)
-        population = keepBestElements(population, costs, 30)
+        population = keepBestElements(population, costs, MIN_NUMBER_OF_SIBLINGS)
         newBestElement = bestElement(population, costs)
         if getTotalCost(newBestElement, costs) >= getTotalCost(actualBestElement, costs):
             noImprovement +=1
