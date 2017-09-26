@@ -3,8 +3,11 @@
 class LocalSearch:
 
     @staticmethod
-    def search(cityMap):
-        path = list(cityMap.getCityList())
+    def search(cityMap, pathToTest = None):
+        if pathToTest != None:
+            path = pathToTest
+        else:
+            path = list(cityMap.getCityList())
         improvement = True
         while improvement:
             improvement = False
@@ -26,4 +29,4 @@ class LocalSearch:
                         path[i+1] = path[j]
                         path[j] = temp
                         improvement = True
-        return (path, cityMap.getTotalCost(path))
+        return path

@@ -1,37 +1,41 @@
 # -*- coding: utf-8 -*-
 from random import randint
-from random import shuffle
+from random import shuffle 
 
 class GeneticSearch:
     
-    MAX_NUMBER_OF_SIBLINGS = 70
-    MIN_NUMBER_OF_SIBLINGS = 30
-    MAX_NUMBER_WITHOUT_IMPROVEMENT = 10
+    MAX_NUMBER_OF_SIBLINGS = 110
+    MIN_NUMBER_OF_SIBLINGS = 50
+    MAX_NUMBER_WITHOUT_IMPROVEMENT = 20
+    MAX_NUMBER_OF_MUTATION = 1
     
-    @staticmethod
-    def search(cityMap):
+    @classmethod
+    def search(cls, cityMap):
         noImprovement = 0
-        population = GeneticSearch.__generatePolulation(cityMap.getCityList(), GeneticSearch.MAX_NUMBER_OF_SIBLINGS)
-        while noImprovement < GeneticSearch.MAX_NUMBER_WITHOUT_IMPROVEMENT:
-            actualBestElement = GeneticSearch.__bestElement(population, cityMap)
-            loopNumber = int((GeneticSearch.MAX_NUMBER_OF_SIBLINGS - GeneticSearch.MIN_NUMBER_OF_SIBLINGS)/2)
+        population = cls._generatePolulation(cityMap.getCityList(), cls.MAX_NUMBER_OF_SIBLINGS)
+        while noImprovement < cls.MAX_NUMBER_WITHOUT_IMPROVEMENT:
+            actualBestElement = cls._bestElement(population, cityMap)
+            loopNumber = int((cls.MAX_NUMBER_OF_SIBLINGS - cls.MIN_NUMBER_OF_SIBLINGS)/2)
             for i in range(0, loopNumber):
-                parent1 = GeneticSearch.__selectParent(population, cityMap)
-                parent2 = GeneticSearch.__selectParent(population, cityMap)
-                (kid1, kid2) = GeneticSearch.__makeLove(parent1, parent2)
-                GeneticSearch.__mutate(kid1)
-                GeneticSearch.__mutate(kid2)
+                parent1 = cls._selectParent(population, cityMap)
+                parent2 = cls._selectParent(population, cityMap)
+                (kid1, kid2) = cls._makeLove(parent1, parent2)
+                for j in range(0, cls.MAX_NUMBER_OF_MUTATION):
+                    cls._mutate(kid1)
+                    cls._mutate(kid2)
                 population.append(kid1)
                 population.append(kid2)
-            population = GeneticSearch.__keepBestElements(population, cityMap, GeneticSearch.MIN_NUMBER_OF_SIBLINGS)
-            newBestElement = GeneticSearch.__bestElement(population, cityMap)
+            population = cls._keepBestElements(population, cityMap, cls.MIN_NUMBER_OF_SIBLINGS)
+            newBestElement = cls._bestElement(population, cityMap)
             if cityMap.getTotalCost(newBestElement) >= cityMap.getTotalCost(actualBestElement):
                 noImprovement +=1
-        result = GeneticSearch.__bestElement(population, cityMap)
-        return (result, cityMap.getTotalCost(result))
+            else:
+                noImprovement =0
+        result = cls._bestElement(population, cityMap)
+        return result
     
-    @staticmethod
-    def __makeLove(father, mother):
+    @classmethod
+    def _makeLove(cls, father, mother):
         halfNumberOfCities = int(len(father)/2)
         startOfSelection = randint(0,halfNumberOfCities)
         child1 = list()
@@ -65,29 +69,29 @@ class GeneticSearch:
         
         return (child1, child2)
     
-    @staticmethod
-    def __mutate(child):
+    @classmethod
+    def _mutate(cls, child):
         swapPosition1 = randint(0,len(child)-1)
         swapPosition2 = randint(0,len(child)-1)
         temp = child[swapPosition1]
         child[swapPosition1] = child[swapPosition2]
         child[swapPosition2] = temp
         
-    @staticmethod
-    def __generateRandomSolution(cityList):
+    @classmethod
+    def _generateRandomSolution(cls, cityList):
         solution = list(cityList)
         shuffle(solution)
         return solution
     
-    @staticmethod
-    def __generatePolulation(cityList, numberOfElement):
+    @classmethod
+    def _generatePolulation(cls, cityList, numberOfElement):
         population = list()
         for i in range(0, numberOfElement):
-            population.append(GeneticSearch.__generateRandomSolution(cityList))
+            population.append(cls._generateRandomSolution(cityList))
         return population
     
-    @staticmethod
-    def __selectParent(population, cityMap):
+    @classmethod
+    def _selectParent(cls, population, cityMap):
         indice1 = randint(0,len(population)-1)
         indice2 = randint(0,len(population)-1)
         if cityMap.getTotalCost(population[indice1]) >= cityMap.getTotalCost(population[indice2]):
@@ -95,8 +99,8 @@ class GeneticSearch:
         else:
             return population[indice1]
     
-    @staticmethod
-    def __bestElement(population, cityMap):
+    @classmethod
+    def _bestElement(cls, population, cityMap):
         bestScore = int()
         element = None
         for i in range(0, len(population)):
@@ -109,11 +113,11 @@ class GeneticSearch:
                 element = population[i]
         return element
     
-    @staticmethod
-    def __keepBestElements(population, cityMap, numberToKeep):
+    @classmethod
+    def _keepBestElements(cls, population, cityMap, numberToKeep):
         newPopulation  = list()
         for i in range(0,numberToKeep):
-            element = GeneticSearch.__bestElement(population, cityMap)
+            element = cls._bestElement(population, cityMap)
             newPopulation.append(element)
             population.remove(element)
         return newPopulation
