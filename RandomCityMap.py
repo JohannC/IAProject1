@@ -13,25 +13,18 @@ class RandomCityMap(CityMap):
     
     @staticmethod
     def __generateCityList(numberOfCities):
-        cityList = list()
-        for i in range(0, numberOfCities):
+        cityList=list()
+        for i in range(1,numberOfCities+1):
             cityList.append(i)
         return cityList
     
     @staticmethod
     def __generateCosts(cityList):
         global MAX_COST
-        costs = dict()
-        for city1 in cityList:
-            for city2 in cityList:
-                if city1 == city2:
-                    continue
-                if city1 < city2:
-                    if (city1, city2) not in costs:
-                        costs[(city1, city2)] = randint(1, RandomCityMap.MAX_COST)
-                else:
-                    if (city2, city1) not in costs:
-                        costs[(city2, city1)] = randint(1, RandomCityMap.MAX_COST)
+        costs=[[0 for x in range(y+1)] for y in range(len(cityList)-1)] 
+        for i in range(0,len(cityList)-1):
+            for j in range(0,i+1):
+                costs[i][j]=randint(1, RandomCityMap.MAX_COST)
         return costs
         
     

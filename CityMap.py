@@ -29,7 +29,7 @@ class CityMap:
 
     def getCostBetweenCities(self, point1, point2):
         if point1 < point2:
-            return self.__costs[(point1, point2)]
+            return self.__costs[point2-2][point1-1]
         else:
-            return self.__costs[(point2, point1)] 
+            return self.__costs[point1-2][point2-1] 
 
