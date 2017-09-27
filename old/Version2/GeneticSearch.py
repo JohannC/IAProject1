@@ -1,38 +1,38 @@
 # -*- coding: utf-8 -*-
 from random import randint
 from random import shuffle 
-from Path import Path
+
 class GeneticSearch:
     
     MAX_NUMBER_OF_SIBLINGS = 110
-    MIN_NUMBER_OF_SIBLINGS = 30
-    MAX_NUMBER_WITHOUT_IMPROVEMENT = 30
+    MIN_NUMBER_OF_SIBLINGS = 50
+    MAX_NUMBER_WITHOUT_IMPROVEMENT = 20
     MAX_NUMBER_OF_MUTATION = 1
     
     @classmethod
     def search(cls, cityMap):
         noImprovement = 0
-        population = cls._generatePolulation(cityMap.getCityList(), cls.MAX_NUMBER_OF_SIBLINGS,cityMap)
-        actualBestElement = cls._bestElement(population)
+        population = cls._generatePolulation(cityMap.getCityList(), cls.MAX_NUMBER_OF_SIBLINGS)
         while noImprovement < cls.MAX_NUMBER_WITHOUT_IMPROVEMENT:
+            actualBestElement = cls._bestElement(population, cityMap)
             loopNumber = int((cls.MAX_NUMBER_OF_SIBLINGS - cls.MIN_NUMBER_OF_SIBLINGS)/2)
             for i in range(0, loopNumber):
-                parent1 = cls._selectParent(population)
-                parent2 = cls._selectParent(population)
+                parent1 = cls._selectParent(population, cityMap)
+                parent2 = cls._selectParent(population, cityMap)
                 (kid1, kid2) = cls._makeLove(parent1, parent2)
                 for j in range(0, cls.MAX_NUMBER_OF_MUTATION):
                     cls._mutate(kid1)
                     cls._mutate(kid2)
-                population.append(Path(kid1,cityMap))
-                population.append(Path(kid2,cityMap))
-            population = cls._keepBestElements(population, cls.MIN_NUMBER_OF_SIBLINGS)
-            newBestElement = population[0]
-            if (newBestElement.pathcost >= actualBestElement.pathcost):
+                population.append(kid1)
+                population.append(kid2)
+            population = cls._keepBestElements(population, cityMap, cls.MIN_NUMBER_OF_SIBLINGS)
+            newBestElement = cls._bestElement(population, cityMap)
+            len(population)
+            if cityMap.getTotalCost(newBestElement) >= cityMap.getTotalCost(actualBestElement):
                 noImprovement +=1
             else:
                 noImprovement =0
-                actualBestElement = newBestElement
-        result = actualBestElement.path
+        result = cls._bestElement(population, cityMap)
         return result
     
     @classmethod
@@ -85,35 +85,39 @@ class GeneticSearch:
         return solution
     
     @classmethod
-    def _generatePolulation(cls, cityList, numberOfElement,cityMap):
+    def _generatePolulation(cls, cityList, numberOfElement):
         population = list()
         for i in range(0, numberOfElement):
-            path=cls._generateRandomSolution(cityList)
-            population.append(Path(path,cityMap))
+            population.append(cls._generateRandomSolution(cityList))
         return population
     
     @classmethod
-    def _selectParent(cls, population):
+    def _selectParent(cls, population, cityMap):
         indice1 = randint(0,len(population)-1)
         indice2 = randint(0,len(population)-1)
-        if (population[indice1].pathcost >= population[indice1].pathcost):
-            return population[indice2].path
+        if cityMap.getTotalCost(population[indice1]) >= cityMap.getTotalCost(population[indice2]):
+            return population[indice2]
         else:
-            return population[indice1].path
+            return population[indice1]
     
     @classmethod
-    def _bestElement(cls, population):
-        element = 0
-        for i in range(1, len(population)):
-            if(population[i].pathcost < population[element].pathcost):
-                element = i
-        return population[element]
+    def _bestElement(cls, population, cityMap):
+        bestScore = int()
+        element = None
+        for i in range(0, len(population)):
+            elementScore = cityMap.getTotalCost(population[i])
+            if i == 0:
+                bestScore = elementScore 
+                element = population[i]
+            elif elementScore < bestScore:
+                bestScore = elementScore
+                element = population[i]
+        return element
     
     @classmethod
-    def _keepBestElements(cls, population, numberToKeep):
+    def _keepBestElements(cls, population, cityMap, numberToKeep):
         costClassification = dict()
         for i in range(0,len(population)):
-            costClassification[population[i].pathcost]  = population[i] 
+            costClassification[cityMap.getTotalCost(population[i])]  = population[i] 
         sortedListOfBestElements = [value for (key, value) in sorted(costClassification.items())]
-        return sortedListOfBestElements[:numberToKeep]   
-            
+        return sortedListOfBestElements[:numberToKeep]            

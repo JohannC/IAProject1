@@ -5,7 +5,8 @@ from RandomCityMap import RandomCityMap
 from LocalSearch import LocalSearch
 from GeneticSearch import GeneticSearch
 from GeneticSearchLocalMinimum import GeneticSearchLocalMinimum
-
+from ReadCityTest import ReadCityTest
+from GeneticSearchLocalMinimumCrazy import GeneticSearchLocalMinimumCrazy
 
 cityMap1 = RandomCityMap(10)
 startTime = datetime.datetime.now()
@@ -21,7 +22,7 @@ path = GeneticSearchLocalMinimum.search(cityMap1)
 endTime = datetime.datetime.now()
 print('Genetic Search with Local minimum 10 cities : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
 
-
+'''
 cityMap1 = RandomCityMap(30)
 startTime = datetime.datetime.now()
 path = LocalSearch.search(cityMap1)
@@ -36,5 +37,63 @@ path = GeneticSearchLocalMinimum.search(cityMap1)
 endTime = datetime.datetime.now()
 print('Genetic Search with Local minimum 30 cities : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
 
+cityMap1 = ReadCityTest("test/gr17.tsp")
+startTime = datetime.datetime.now()
+path = LocalSearch.search(cityMap1)
+endTime = datetime.datetime.now()
+print('Local Search test/gr17.tsp : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
+startTime = datetime.datetime.now()
+path = GeneticSearch.search(cityMap1)
+endTime = datetime.datetime.now()
+print('Genetic Search test/gr17.tsp : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
+startTime = datetime.datetime.now()
+path = GeneticSearchLocalMinimum.search(cityMap1)
+endTime = datetime.datetime.now()
+print('Genetic Search with Local minimum test/gr17.tsp : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
 
+cityMap1 = ReadCityTest("test/gr21.tsp")
+startTime = datetime.datetime.now()
+path = LocalSearch.search(cityMap1)
+endTime = datetime.datetime.now()
+print('Local Search test/gr21.tsp : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
+startTime = datetime.datetime.now()
+path = GeneticSearch.search(cityMap1)
+endTime = datetime.datetime.now()
+print('Genetic Search test/gr21.tsp : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
+startTime = datetime.datetime.now()
+path = GeneticSearchLocalMinimum.search(cityMap1)
+endTime = datetime.datetime.now()
+print('Genetic Search with Local minimum test/gr21.tsp : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
 
+cityMap1 = ReadCityTest("test/gr24.tsp")
+startTime = datetime.datetime.now()
+path = LocalSearch.search(cityMap1)
+endTime = datetime.datetime.now()
+print('Local Search test/gr24.tsp : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
+startTime = datetime.datetime.now()
+path = GeneticSearch.search(cityMap1)
+endTime = datetime.datetime.now()
+print('Genetic Search test/gr24.tsp : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
+startTime = datetime.datetime.now()
+path = GeneticSearchLocalMinimum.search(cityMap1)
+endTime = datetime.datetime.now()
+print('Genetic Search with Local minimum test/gr24.tsp : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
+'''
+cityMap1 = ReadCityTest("test/hk48.tsp")
+startTime = datetime.datetime.now()
+path = LocalSearch.search(cityMap1)
+endTime = datetime.datetime.now()
+print('Local Search test/hk48.tsp : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
+startTime = datetime.datetime.now()
+path = GeneticSearch.search(cityMap1)
+endTime = datetime.datetime.now()
+print('Genetic Search test/hk48.tsp : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
+startTime = datetime.datetime.now()
+path = GeneticSearchLocalMinimum.search(cityMap1)
+endTime = datetime.datetime.now()
+print('Genetic Search with Local minimum test/hk48.tsp : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
+
+startTime = datetime.datetime.now()
+path = GeneticSearchLocalMinimumCrazy.search(cityMap1)
+endTime = datetime.datetime.now()
+print(' Crazy Genetic Search with Local minimum test/hk48.tsp : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))

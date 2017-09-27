@@ -5,7 +5,7 @@ from GeneticSearch import GeneticSearch
 from Path import Path
 
 
-class GeneticSearchLocalMinimum(GeneticSearch):
+class GeneticSearchLocalMinimumCrazy(GeneticSearch):
     
     MAX_NUMBER_OF_SIBLINGS = 120
     MIN_NUMBER_OF_SIBLINGS = 40
@@ -16,7 +16,7 @@ class GeneticSearchLocalMinimum(GeneticSearch):
     def search(cls, cityMap):
         noImprovement = 0
         population = cls._generatePolulation(cityMap.getCityList(), cls.MIN_NUMBER_OF_SIBLINGS, cityMap)
-        actualBestElement = super(GeneticSearchLocalMinimum, cls)._bestElement(population)
+        actualBestElement = super(GeneticSearchLocalMinimumCrazy, cls)._bestElement(population)
         for i in range(0,len(population)):
             print(population[i].pathcost)
         print()
@@ -24,9 +24,9 @@ class GeneticSearchLocalMinimum(GeneticSearch):
         while noImprovement < cls.MAX_NUMBER_WITHOUT_IMPROVEMENT:
             loopNumber = int((cls.MAX_NUMBER_OF_SIBLINGS - cls.MIN_NUMBER_OF_SIBLINGS)/2)
             for i in range(0, loopNumber):
-                parent1 = super(GeneticSearchLocalMinimum, cls)._selectParent(population)
-                parent2 = super(GeneticSearchLocalMinimum, cls)._selectParent(population)
-                (kid1, kid2) = super(GeneticSearchLocalMinimum, cls)._makeLove(parent1, parent2)
+                parent1 = super(GeneticSearchLocalMinimumCrazy, cls)._selectParent(population)
+                parent2 = super(GeneticSearchLocalMinimumCrazy, cls)._selectParent(population)
+                (kid1, kid2) = super(GeneticSearchLocalMinimumCrazy, cls)._makeLove(parent1, parent2)
                 chance=randint(0,19)
                 if(chance==0):
                     kid1 = LocalSearch.search(cityMap, kid1)
@@ -54,11 +54,11 @@ class GeneticSearchLocalMinimum(GeneticSearch):
     def _generatePolulation(cls, cityList, numberOfElement, cityMap):
         population = list()
         for i in range(0, int(numberOfElement/5)):
-            member = super(GeneticSearchLocalMinimum, cls)._generateRandomSolution(cityList)
+            member = super(GeneticSearchLocalMinimumCrazy, cls)._generateRandomSolution(cityList)
             memberImproved= LocalSearch.search(cityMap, member)
             population.append(Path(memberImproved,cityMap))
         for i in range(int(numberOfElement/5), numberOfElement):
-            member = super(GeneticSearchLocalMinimum, cls)._generateRandomSolution(cityList)
+            member = super(GeneticSearchLocalMinimumCrazy, cls)._generateRandomSolution(cityList)
             population.append(Path(member,cityMap))
         return population
     @classmethod
