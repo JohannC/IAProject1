@@ -111,10 +111,9 @@ class GeneticSearch:
     
     @classmethod
     def _keepBestElements(cls, population, numberToKeep):
-        newPopulation  = list()
-        for i in range(0,numberToKeep):
-            element = cls._bestElement(population)
-            newPopulation.append(element)
-            population.remove(element)
-        return newPopulation
+        costClassification = dict()
+        for i in range(0,len(population)):
+            costClassification[population[i].pathcost]  = population[i] 
+        sortedListOfBestElements = [value for (key, value) in sorted(costClassification.items())]
+        return sortedListOfBestElements[:numberToKeep]   
             

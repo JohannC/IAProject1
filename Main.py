@@ -32,7 +32,7 @@ path = GeneticSearch.search(cityMap1)
 endTime = datetime.datetime.now()
 print('Genetic Search 30 cities : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
 startTime = datetime.datetime.now()
-#path = GeneticSearchLocalMinimum.search(cityMap1)
+path = GeneticSearchLocalMinimum.search(cityMap1)
 endTime = datetime.datetime.now()
 print('Genetic Search with Local minimum 30 cities : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
 

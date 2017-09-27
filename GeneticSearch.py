@@ -27,6 +27,7 @@ class GeneticSearch:
                 population.append(kid2)
             population = cls._keepBestElements(population, cityMap, cls.MIN_NUMBER_OF_SIBLINGS)
             newBestElement = cls._bestElement(population, cityMap)
+            len(population)
             if cityMap.getTotalCost(newBestElement) >= cityMap.getTotalCost(actualBestElement):
                 noImprovement +=1
             else:
@@ -115,10 +116,8 @@ class GeneticSearch:
     
     @classmethod
     def _keepBestElements(cls, population, cityMap, numberToKeep):
-        newPopulation  = list()
-        for i in range(0,numberToKeep):
-            element = cls._bestElement(population, cityMap)
-            newPopulation.append(element)
-            population.remove(element)
-        return newPopulation
-            
+        costClassification = dict()
+        for i in range(0,len(population)):
+            costClassification[cityMap.getTotalCost(population[i])]  = population[i] 
+        sortedListOfBestElements = [value for (key, value) in sorted(costClassification.items())]
+        return sortedListOfBestElements[:numberToKeep]            
