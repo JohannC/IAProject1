@@ -8,8 +8,8 @@ from Path import Path
 class GeneticSearchLocalMinimumCrazy(GeneticSearch):
     
     MAX_NUMBER_OF_SIBLINGS = 120
-    MIN_NUMBER_OF_SIBLINGS = 40
-    MAX_NUMBER_WITHOUT_IMPROVEMENT = 10
+    MIN_NUMBER_OF_SIBLINGS = 30
+    MAX_NUMBER_WITHOUT_IMPROVEMENT = 20
     MAX_NUMBER_OF_MUTATION = 1
     
     @classmethod
@@ -17,31 +17,20 @@ class GeneticSearchLocalMinimumCrazy(GeneticSearch):
         noImprovement = 0
         population = cls._generatePolulation(cityMap.getCityList(), cls.MIN_NUMBER_OF_SIBLINGS, cityMap)
         actualBestElement = super(GeneticSearchLocalMinimumCrazy, cls)._bestElement(population)
-        for i in range(0,len(population)):
-            print(population[i].pathcost)
-        print()
-        print()
         while noImprovement < cls.MAX_NUMBER_WITHOUT_IMPROVEMENT:
             loopNumber = int((cls.MAX_NUMBER_OF_SIBLINGS - cls.MIN_NUMBER_OF_SIBLINGS)/2)
             for i in range(0, loopNumber):
                 parent1 = super(GeneticSearchLocalMinimumCrazy, cls)._selectParent(population)
                 parent2 = super(GeneticSearchLocalMinimumCrazy, cls)._selectParent(population)
                 (kid1, kid2) = super(GeneticSearchLocalMinimumCrazy, cls)._makeLove(parent1, parent2)
-                chance=randint(0,19)
-                if(chance==0):
-                    kid1 = LocalSearch.search(cityMap, kid1)
-                if(chance==2):
-                    kid2 = LocalSearch.search(cityMap, kid2)
+                kid1 = LocalSearch.searchTrial(cityMap, kid1)
+                kid2 = LocalSearch.searchTrial(cityMap, kid2)
                 
                 population.append(Path(kid1,cityMap))
                 population.append(Path(kid2,cityMap))
             population = cls._keepBestElements(population, cls.MIN_NUMBER_OF_SIBLINGS)
-            for i in range(0,len(population)):
-                print(population[i].pathcost)
-            print()
-            print()
-            print()
             newBestElement = population[0]
+            
             if newBestElement.pathcost >= actualBestElement.pathcost:
                 noImprovement +=1
             else:
@@ -53,11 +42,7 @@ class GeneticSearchLocalMinimumCrazy(GeneticSearch):
     @classmethod
     def _generatePolulation(cls, cityList, numberOfElement, cityMap):
         population = list()
-        for i in range(0, int(numberOfElement/5)):
-            member = super(GeneticSearchLocalMinimumCrazy, cls)._generateRandomSolution(cityList)
-            memberImproved= LocalSearch.search(cityMap, member)
-            population.append(Path(memberImproved,cityMap))
-        for i in range(int(numberOfElement/5), numberOfElement):
+        for i in range(0, numberOfElement):
             member = super(GeneticSearchLocalMinimumCrazy, cls)._generateRandomSolution(cityList)
             population.append(Path(member,cityMap))
         return population
