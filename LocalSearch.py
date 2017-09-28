@@ -49,7 +49,41 @@ class LocalSearch:
                     improvement = True
                         
         return path
+    @staticmethod
+    def searchLight(cityMap, pathToTest = None):
+        if pathToTest != None:
+            path = pathToTest
+        else:
+            path = list(cityMap.getCityList())
+        improvement = True
+        n=len(path)
+        while improvement:
+            improvement = False
+            for i in range(0, len(path)):
+                
+                for j in range(i+1, len(path)):
+                    
+                    if(j==i+1):
+                        actualPathCost = cityMap.getCostBetweenCities(path[LocalSearch._getPosition(n,i-1)], path[i]) + cityMap.getCostBetweenCities(path[j], path[LocalSearch._getPosition(n,i+2)])
+                        newPathCost = cityMap.getCostBetweenCities(path[LocalSearch._getPosition(n,i-1)], path[j])  + cityMap.getCostBetweenCities(path[i], path[LocalSearch._getPosition(n,i+2)])
+                    elif(j-n==i-1):
+                        actualPathCost =  cityMap.getCostBetweenCities(path[j-1], path[j])+cityMap.getCostBetweenCities(path[i], path[i+1])
+                        newPathCost = cityMap.getCostBetweenCities(path[j-1], path[i])  + cityMap.getCostBetweenCities(path[j], path[i+1])
+                    else:
+                        actualPathCost = cityMap.getCostBetweenCities(path[LocalSearch._getPosition(n,i-1)], path[i]) + cityMap.getCostBetweenCities(path[j], path[LocalSearch._getPosition(n,j+1)]) + cityMap.getCostBetweenCities(path[i], path[LocalSearch._getPosition(n,i+1)]) + cityMap.getCostBetweenCities(path[j-1], path[j])
+                        newPathCost = cityMap.getCostBetweenCities(path[LocalSearch._getPosition(n,i-1)], path[j]) + cityMap.getCostBetweenCities(path[i], path[LocalSearch._getPosition(n,j+1)]) + cityMap.getCostBetweenCities(path[j], path[LocalSearch._getPosition(n,i+1)]) + cityMap.getCostBetweenCities(path[j-1], path[i])
+                    #actualPathCost = getCost(path[i], path[i+1], costs)
+                    #newPathCost = getCost(path[i], path[j], costs)
+                    if actualPathCost > newPathCost:
+                        temp = path[i]
+                        path[i] = path[j]
+                        path[j] = temp
+                        improvement = True
+                        
+        return path
     def _getPosition(n,i):
+        if(i==-1):
+            return n-1
         if(i>=n):
             i=i-n
         return i
