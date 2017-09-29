@@ -11,31 +11,25 @@ class GeneticSearchLocalMinimum(GeneticSearch):
     MAX_NUMBER_WITHOUT_IMPROVEMENT = 3
     MAX_NUMBER_OF_MUTATION = 1
     
-    @classmethod
-    def search(cls, cityMap):
+    def __init__(self, cityMap, seed = None):
+        super(GeneticSearchLocalMinimum, self).__init__(cityMap, seed)
+        self.localResearcher = LocalSearch(self.cityMap)
+
+    def search(self):
         noImprovement = 0
-        population = cls._generatePolulation(cityMap.getCityList(), cls.MAX_NUMBER_OF_SIBLINGS, cityMap)
-        actualBestElement = super(GeneticSearchLocalMinimum, cls)._bestElement(population)
-        for i in range(0,len(population)):
-            print(population[i].pathcost)
-        print()
-        print()
-        while noImprovement < cls.MAX_NUMBER_WITHOUT_IMPROVEMENT:
-            loopNumber = int((cls.MAX_NUMBER_OF_SIBLINGS - cls.MIN_NUMBER_OF_SIBLINGS)/2)
+        population = self._generatePolulation(self.MAX_NUMBER_OF_SIBLINGS)
+        actualBestElement = super(GeneticSearchLocalMinimum, self)._bestElement(population)
+        while noImprovement < self.MAX_NUMBER_WITHOUT_IMPROVEMENT:
+            loopNumber = int((self.MAX_NUMBER_OF_SIBLINGS - self.MIN_NUMBER_OF_SIBLINGS)/2)
             for i in range(0, loopNumber):
-                parent1 = super(GeneticSearchLocalMinimum, cls)._selectParent(population)
-                parent2 = super(GeneticSearchLocalMinimum, cls)._selectParent(population)
-                (kid1, kid2) = super(GeneticSearchLocalMinimum, cls)._makeLove(parent1, parent2)
-                kid1Improved = LocalSearch.search(cityMap, kid1)
-                kid2Improved = LocalSearch.search(cityMap, kid2)
-                population.append(Path(kid1Improved,cityMap))
-                population.append(Path(kid2Improved,cityMap))
-            population = super(GeneticSearchLocalMinimum, cls)._keepBestElements(population, cls.MIN_NUMBER_OF_SIBLINGS)
-            for i in range(0,len(population)):
-                print(population[i].pathcost)
-            print()
-            print()
-            print()
+                parent1 = super(GeneticSearchLocalMinimum, self)._selectParent(population)
+                parent2 = super(GeneticSearchLocalMinimum, self)._selectParent(population)
+                (kid1, kid2) = super(GeneticSearchLocalMinimum, self)._makeLove(parent1, parent2)
+                kid1Improved = self.localResearcher.search(kid1)
+                kid2Improved = self.localResearcher.search(kid2)
+                population.append(Path(kid1Improved,self.cityMap))
+                population.append(Path(kid2Improved,self.cityMap))
+            population = super(GeneticSearchLocalMinimum, self)._keepBestElements(population, self.MIN_NUMBER_OF_SIBLINGS)
             newBestElement = population[0]
             if newBestElement.pathcost >= actualBestElement.pathcost:
                 noImprovement +=1
@@ -45,13 +39,12 @@ class GeneticSearchLocalMinimum(GeneticSearch):
         result = actualBestElement.path
         return result
     
-    @classmethod
-    def _generatePolulation(cls, cityList, numberOfElement, cityMap):
+    def _generatePolulation(self, numberOfElement):
         population = list()
         for i in range(0, numberOfElement):
-            member = super(GeneticSearchLocalMinimum, cls)._generateRandomSolution(cityList)
-            memberImproved= LocalSearch.search(cityMap, member)
-            population.append(Path(memberImproved,cityMap))
+            member = super(GeneticSearchLocalMinimum, self)._generateRandomSolution()
+            memberImproved= self.localResearcher.search(member)
+            population.append(Path(memberImproved,self.cityMap))
         return population
     
             

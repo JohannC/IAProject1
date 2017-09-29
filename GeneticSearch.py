@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from random import randint
-from random import shuffle 
+import random 
 from Path import Path
+import math
 class GeneticSearch:
     
     MAX_NUMBER_OF_SIBLINGS = 110
@@ -9,23 +9,29 @@ class GeneticSearch:
     MAX_NUMBER_WITHOUT_IMPROVEMENT = 30
     MAX_NUMBER_OF_MUTATION = 1
     
-    @classmethod
-    def search(cls, cityMap):
+    def __init__(self, cityMap, seed = None):
+       self.seed = seed
+       self.cityMap = cityMap
+       if seed != None:
+           random.seed(seed)
+
+    
+    def search(self):
         noImprovement = 0
-        population = cls._generatePolulation(cityMap.getCityList(), cls.MAX_NUMBER_OF_SIBLINGS,cityMap)
-        actualBestElement = cls._bestElement(population)
-        while noImprovement < cls.MAX_NUMBER_WITHOUT_IMPROVEMENT:
-            loopNumber = int((cls.MAX_NUMBER_OF_SIBLINGS - cls.MIN_NUMBER_OF_SIBLINGS)/2)
+        population = self._generatePolulation(self.MAX_NUMBER_OF_SIBLINGS)
+        actualBestElement = self._bestElement(population)
+        while noImprovement < self.MAX_NUMBER_WITHOUT_IMPROVEMENT:
+            loopNumber = int((self.MAX_NUMBER_OF_SIBLINGS - self.MIN_NUMBER_OF_SIBLINGS)/2)
             for i in range(0, loopNumber):
-                parent1 = cls._selectParent(population)
-                parent2 = cls._selectParent(population)
-                (kid1, kid2) = cls._makeLove(parent1, parent2)
-                for j in range(0, cls.MAX_NUMBER_OF_MUTATION):
-                    cls._mutate(kid1)
-                    cls._mutate(kid2)
-                population.append(Path(kid1,cityMap))
-                population.append(Path(kid2,cityMap))
-            population = cls._keepBestElements(population, cls.MIN_NUMBER_OF_SIBLINGS)
+                parent1 = self._selectParent(population)
+                parent2 = self._selectParent(population)
+                (kid1, kid2) = self._makeLove(parent1, parent2)
+                for j in range(0, self.MAX_NUMBER_OF_MUTATION):
+                    self._mutate(kid1)
+                    self._mutate(kid2)
+                population.append(Path(kid1,self.cityMap))
+                population.append(Path(kid2,self.cityMap))
+            population = self._keepBestElements(population, self.MIN_NUMBER_OF_SIBLINGS)
             newBestElement = population[0]
             if (newBestElement.pathcost >= actualBestElement.pathcost):
                 noImprovement +=1
@@ -36,9 +42,9 @@ class GeneticSearch:
         return result
     
     @classmethod
-    def _makeLove(cls, father, mother):
+    def _makeLove(self, father, mother):
         halfNumberOfCities = int(len(father)/2)
-        startOfSelection = randint(0,halfNumberOfCities)
+        startOfSelection = random.randint(0,halfNumberOfCities)
         child1 = list()
         child2 = list()
         nextIndiceToFillForChild1=0
@@ -70,50 +76,56 @@ class GeneticSearch:
         
         return (child1, child2)
     
-    @classmethod
-    def _mutate(cls, child):
-        swapPosition1 = randint(0,len(child)-1)
-        swapPosition2 = randint(0,len(child)-1)
+    def _mutate(self, child):
+        swapPosition1 = random.randint(0,len(child)-1)
+        swapPosition2 = random.randint(0,len(child)-1)
         temp = child[swapPosition1]
         child[swapPosition1] = child[swapPosition2]
         child[swapPosition2] = temp
         
-    @classmethod
-    def _generateRandomSolution(cls, cityList):
-        solution = list(cityList)
-        shuffle(solution)
+    def _generateRandomSolution(self):
+        solution = list(self.cityMap.getCityList())
+        random.shuffle(solution)
         return solution
     
-    @classmethod
-    def _generatePolulation(cls, cityList, numberOfElement,cityMap):
+    def _generatePolulation(self, numberOfElement):
         population = list()
         for i in range(0, numberOfElement):
-            path=cls._generateRandomSolution(cityList)
-            population.append(Path(path,cityMap))
+            path=self._generateRandomSolution()
+            population.append(Path(path,self.cityMap))
         return population
     
-    @classmethod
-    def _selectParent(cls, population):
-        indice1 = randint(0,len(population)-1)
-        indice2 = randint(0,len(population)-1)
+    def _selectParent(self, population):
+        indice1 = random.randint(0,len(population)-1)
+        indice2 = random.randint(0,len(population)-1)
         if (population[indice1].pathcost >= population[indice1].pathcost):
             return population[indice2].path
         else:
             return population[indice1].path
     
-    @classmethod
-    def _bestElement(cls, population):
+    def _bestElement(self, population):
         element = 0
         for i in range(1, len(population)):
             if(population[i].pathcost < population[element].pathcost):
                 element = i
         return population[element]
     
-    @classmethod
-    def _keepBestElements(cls, population, numberToKeep):
+    def _keepBestElements(self, population, numberToKeep):
         costClassification = dict()
         for i in range(0,len(population)):
             costClassification[population[i].pathcost]  = population[i] 
         sortedListOfBestElements = [value for (key, value) in sorted(costClassification.items())]
-        return sortedListOfBestElements[:numberToKeep]   
+        n = int(math.ceil(numberToKeep/2))
+        "Keeps top n elements, where n is selected number/2"
+        filteredSortedListOfBestElements = sortedListOfBestElements[:n] 
+        "Calculates how many will be left"
+        amountLeft = len(population) - n
+        "Gets in a separate list the not chosen elements"
+        notSelectedElementList = sortedListOfBestElements[:-amountLeft]
+        "Shuffles the list"
+        random.shuffle(notSelectedElementList)
+        "Selects the first n random elements"
+        randomSelectedElementList = notSelectedElementList[:n]
+        
+        return filteredSortedListOfBestElements + randomSelectedElementList  
             
