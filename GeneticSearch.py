@@ -33,12 +33,12 @@ class GeneticSearch:
                 population.append(Path(kid2,self.cityMap))
             population = self._keepBestElements(population, self.MIN_NUMBER_OF_SIBLINGS)
             newBestElement = population[0]
-            if (newBestElement.pathcost >= actualBestElement.pathcost):
+            if (newBestElement.getPathCost() >= actualBestElement.getPathCost()):
                 noImprovement +=1
             else:
                 noImprovement =0
                 actualBestElement = newBestElement
-        result = actualBestElement.path
+        result = actualBestElement.getPath()
         return result
     
     @classmethod
@@ -98,22 +98,22 @@ class GeneticSearch:
     def _selectParent(self, population):
         indice1 = random.randint(0,len(population)-1)
         indice2 = random.randint(0,len(population)-1)
-        if (population[indice1].pathcost >= population[indice1].pathcost):
-            return population[indice2].path
+        if (population[indice1].getPathCost() >= population[indice1].getPathCost()):
+            return population[indice2].getPath()
         else:
-            return population[indice1].path
+            return population[indice1].getPath()
     
     def _bestElement(self, population):
         element = 0
         for i in range(1, len(population)):
-            if(population[i].pathcost < population[element].pathcost):
+            if(population[i].getPathCost() < population[element].getPathCost()):
                 element = i
         return population[element]
     
     def _keepBestElements(self, population, numberToKeep):
         costClassification = dict()
         for i in range(0,len(population)):
-            costClassification[population[i].pathcost]  = population[i] 
+            costClassification[population[i].getPathCost()]  = population[i] 
         sortedListOfBestElements = [value for (key, value) in sorted(costClassification.items())]
         n = int(math.ceil(numberToKeep/2))
         "Keeps top n elements, where n is selected number/2"
