@@ -8,6 +8,7 @@ from ReadCityMapFromFile import ReadCityMapFromFile
 
 seed = 10
 
+
 cityMap1 = ReadCityMapFromFile.read("test/gr17.tsp")
 startTime = datetime.datetime.now()
 path = LocalSearch(cityMap1).search()
@@ -50,7 +51,9 @@ path = GeneticSearchLocalMinimum(cityMap1, seed).search()
 endTime = datetime.datetime.now()
 print('Genetic Search with Local minimum test/gr24.tsp : '+str(cityMap1.getTotalCost(path))+' in '+str(endTime - startTime))
 
+
 cityMap1 = ReadCityMapFromFile.read("test/hk48.tsp")
+
 startTime = datetime.datetime.now()
 path = LocalSearch(cityMap1).search()
 endTime = datetime.datetime.now()

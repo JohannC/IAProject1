@@ -31,12 +31,12 @@ class GeneticSearchLocalMinimum(GeneticSearch):
                 population.append(Path(kid2Improved,self.cityMap))
             population = super(GeneticSearchLocalMinimum, self)._keepBestElements(population, self.MIN_NUMBER_OF_SIBLINGS)
             newBestElement = population[0]
-            if newBestElement.getPathCost() >= actualBestElement.getPathCost():
+            if newBestElement.pathcost >= actualBestElement.pathcost:
                 noImprovement +=1
             else:
                 noImprovement =0
                 actualBestElement = newBestElement
-        result = actualBestElement.getPath()
+        result = actualBestElement.path
         return result
     
     def _generatePolulation(self, numberOfElement):
