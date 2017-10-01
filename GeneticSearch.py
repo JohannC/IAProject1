@@ -6,13 +6,17 @@ class GeneticSearch:
     
     MAX_NUMBER_OF_SIBLINGS_COEFF = 1.8
     MIN_NUMBER_OF_SIBLINGS_COEFF = 0.6
-    MAX_NUMBER_WITHOUT_IMPROVEMENT = 30
-    MAX_NUMBER_OF_MUTATION = 1
+    MAX_NUMBER_WITHOUT_IMPROVEMENT = 32
+    MAX_NUMBER_OF_MUTATION_COEFF = 0.08
+    COEFF_BIG_PROBLEMS_COEFF =0.3
     
     def __init__(self, cityMap, seed = None):
        self.seed = seed
        self.cityMap = cityMap
-       (self.minNumberOfSiblings, self.maxNumberOfSiblings) = self._calculateParameters()
+       if(self.__class__.__name__=='GeneticSearch'): #genetic
+           (self.minNumberOfSiblings, self.maxNumberOfSiblings, self.maxNumberWithoutImprovement, self.maxNumberOfMutation) = self._calculateParameters()
+       else: #genticwithlocalminimum
+           (self.minNumberOfSiblings, self.maxNumberOfSiblings, self.maxNumberWithoutImprovement) = self._calculateParameters()
        if seed != None:
            random.seed(seed)
 
@@ -21,13 +25,13 @@ class GeneticSearch:
         noImprovement = 0
         population = self._generatePolulation(self.minNumberOfSiblings)
         actualBestElement = self._bestElement(population)
-        while noImprovement < self.MAX_NUMBER_WITHOUT_IMPROVEMENT:
+        while noImprovement < self.maxNumberWithoutImprovement:
             loopNumber = int((self.maxNumberOfSiblings - self.minNumberOfSiblings)/2)
             for i in range(0, loopNumber):
                 parent1 = self._selectParent(population)
                 parent2 = self._selectParent(population)
                 (kid1, kid2) = self._makeLove(parent1, parent2)
-                for j in range(0, self.MAX_NUMBER_OF_MUTATION):
+                for j in range(0, random.randint(0,self.maxNumberOfMutation)):
                     self._mutate(kid1)
                     self._mutate(kid2)
                 population.append(Path(kid1,self.cityMap))
@@ -77,12 +81,19 @@ class GeneticSearch:
         
         return (child1, child2)
     def _calculateParameters(self):
-        aux=1.0
+        maxNumberWithoutImprovement=self.MAX_NUMBER_WITHOUT_IMPROVEMENT
         if(self.cityMap.getNumberOfCities()>=100):
-            aux=0.25
+            aux=self.COEFF_BIG_PROBLEMS_COEFF
+            maxNumberWithoutImprovement=int(maxNumberWithoutImprovement*aux*3)
+        else:
+            aux=1.0
         minNumberOfSiblings = int(self.cityMap.getNumberOfCities()*self.MIN_NUMBER_OF_SIBLINGS_COEFF*aux)
         maxNumberOfSiblings = int(self.cityMap.getNumberOfCities()*self.MAX_NUMBER_OF_SIBLINGS_COEFF*aux)
-        return(minNumberOfSiblings, maxNumberOfSiblings)
+        if(self.__class__.__name__=='GeneticSearch'):
+            maxNumberOfMutation = int(self.cityMap.getNumberOfCities()*self.MAX_NUMBER_OF_MUTATION_COEFF*aux)
+            return(minNumberOfSiblings, maxNumberOfSiblings, maxNumberWithoutImprovement, maxNumberOfMutation)
+        else:
+            return(minNumberOfSiblings, maxNumberOfSiblings, maxNumberWithoutImprovement)
         
     
     def _mutate(self, child):
