@@ -6,21 +6,23 @@ from Path import Path
 
 class GeneticSearchLocalMinimum(GeneticSearch):
     
-    MAX_NUMBER_OF_SIBLINGS = 16
-    MIN_NUMBER_OF_SIBLINGS = 4
+    MAX_NUMBER_OF_SIBLINGS_COEFF = 0.7
+    MIN_NUMBER_OF_SIBLINGS_COEFF = 0.25
     MAX_NUMBER_WITHOUT_IMPROVEMENT = 3
     MAX_NUMBER_OF_MUTATION = 1
     
     def __init__(self, cityMap, seed = None):
         super(GeneticSearchLocalMinimum, self).__init__(cityMap, seed)
         self.localResearcher = LocalSearch(self.cityMap)
+        (self.minNumberOfSiblings, self.maxNumberOfSiblings) =  super(GeneticSearchLocalMinimum, self)._calculateParameters()
+
 
     def search(self):
         noImprovement = 0
-        population = self._generatePolulation(self.MAX_NUMBER_OF_SIBLINGS)
+        population = self._generatePolulation(self.minNumberOfSiblings)
         actualBestElement = super(GeneticSearchLocalMinimum, self)._bestElement(population)
         while noImprovement < self.MAX_NUMBER_WITHOUT_IMPROVEMENT:
-            loopNumber = int((self.MAX_NUMBER_OF_SIBLINGS - self.MIN_NUMBER_OF_SIBLINGS)/2)
+            loopNumber = int((self.maxNumberOfSiblings - self.minNumberOfSiblings)/2)
             for i in range(0, loopNumber):
                 parent1 = super(GeneticSearchLocalMinimum, self)._selectParent(population)
                 parent2 = super(GeneticSearchLocalMinimum, self)._selectParent(population)
@@ -29,7 +31,7 @@ class GeneticSearchLocalMinimum(GeneticSearch):
                 kid2Improved = self.localResearcher.search(kid2)
                 population.append(Path(kid1Improved,self.cityMap))
                 population.append(Path(kid2Improved,self.cityMap))
-            population = super(GeneticSearchLocalMinimum, self)._keepBestElements(population, self.MIN_NUMBER_OF_SIBLINGS)
+            population = super(GeneticSearchLocalMinimum, self)._keepBestElements(population, self.minNumberOfSiblings)
             newBestElement = population[0]
             if newBestElement.pathcost >= actualBestElement.pathcost:
                 noImprovement +=1

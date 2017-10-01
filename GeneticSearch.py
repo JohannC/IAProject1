@@ -4,24 +4,25 @@ from Path import Path
 import math
 class GeneticSearch:
     
-    MAX_NUMBER_OF_SIBLINGS = 110
-    MIN_NUMBER_OF_SIBLINGS = 30
+    MAX_NUMBER_OF_SIBLINGS_COEFF = 1.8
+    MIN_NUMBER_OF_SIBLINGS_COEFF = 0.6
     MAX_NUMBER_WITHOUT_IMPROVEMENT = 30
     MAX_NUMBER_OF_MUTATION = 1
     
     def __init__(self, cityMap, seed = None):
        self.seed = seed
        self.cityMap = cityMap
+       (self.minNumberOfSiblings, self.maxNumberOfSiblings) = self._calculateParameters()
        if seed != None:
            random.seed(seed)
 
     
     def search(self):
         noImprovement = 0
-        population = self._generatePolulation(self.MAX_NUMBER_OF_SIBLINGS)
+        population = self._generatePolulation(self.minNumberOfSiblings)
         actualBestElement = self._bestElement(population)
         while noImprovement < self.MAX_NUMBER_WITHOUT_IMPROVEMENT:
-            loopNumber = int((self.MAX_NUMBER_OF_SIBLINGS - self.MIN_NUMBER_OF_SIBLINGS)/2)
+            loopNumber = int((self.maxNumberOfSiblings - self.minNumberOfSiblings)/2)
             for i in range(0, loopNumber):
                 parent1 = self._selectParent(population)
                 parent2 = self._selectParent(population)
@@ -31,7 +32,7 @@ class GeneticSearch:
                     self._mutate(kid2)
                 population.append(Path(kid1,self.cityMap))
                 population.append(Path(kid2,self.cityMap))
-            population = self._keepBestElements(population, self.MIN_NUMBER_OF_SIBLINGS)
+            population = self._keepBestElements(population, self.minNumberOfSiblings)
             newBestElement = population[0]
             if (newBestElement.getPathCost() >= actualBestElement.getPathCost()):
                 noImprovement +=1
@@ -75,6 +76,14 @@ class GeneticSearch:
                 nextIndiceToFillForChild2 +=1
         
         return (child1, child2)
+    def _calculateParameters(self):
+        aux=1.0
+        if(self.cityMap.getNumberOfCities()>=100):
+            aux=0.25
+        minNumberOfSiblings = int(self.cityMap.getNumberOfCities()*self.MIN_NUMBER_OF_SIBLINGS_COEFF*aux)
+        maxNumberOfSiblings = int(self.cityMap.getNumberOfCities()*self.MAX_NUMBER_OF_SIBLINGS_COEFF*aux)
+        return(minNumberOfSiblings, maxNumberOfSiblings)
+        
     
     def _mutate(self, child):
         swapPosition1 = random.randint(0,len(child)-1)
